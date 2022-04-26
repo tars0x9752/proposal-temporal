@@ -8,13 +8,6 @@
   <emu-clause id="sec-time-zone-names">
     <h1>Time Zone Names</h1>
 
-    <emu-note type="editor">
-      <p>
-        The normative intention of this section is that an implementation must support UTC and a local time zone, which may also be UTC, or a named time zone like *"Europe/London"*, or an offset time zone like *"+01:00"*; and that the local time zone must in any case be consistent with the time zone offsets that can be determined using `Date.prototype.getTimezoneOffset()`, `Date.prototype.toString()`, and `Date.prototype.toTimeString()`.
-        The exact formal definition of "local time zone" is still to be determined.
-      </p>
-    </emu-note>
-
     <p>
       An ECMAScript implementation must support a number of built-in time zones.
       At a minimum, implementations must support a built-in time zone named *"UTC"*.
@@ -74,7 +67,7 @@
         An ECMAScript implementation that includes the ECMA-402 Internationalization API must implement the CanonicalizeTimeZoneName abstract operation as specified in the ECMA-402 specification.
       </p>
       <p>
-        The minimum implementation of CanonicalizeTimeZoneName for ECMAScript implementations that do not include the ECMA-402 API, supporting only the *"UTC"* time zone, performs the following steps when called:
+        The minimum implementation of CanonicalizeTimeZoneName for ECMAScript implementations that do not include local political rules for any time zones performs the following steps when called:
       </p>
 
       <emu-alg>
@@ -97,12 +90,21 @@
         An ECMAScript implementation that includes the ECMA-402 Internationalization API must implement the DefaultTimeZone abstract operation as specified in the ECMA-402 specification.
       </p>
       <p>
-        The minimum implementation of DefaultTimeZone for ECMAScript implementations that do not include the ECMA-402 API, supporting only the *"UTC"* time zone, performs the following steps when called:
+        The minimum implementation of DefaultTimeZone for ECMAScript implementations that do not include local political rules for any time zones performs the following steps when called:
       </p>
 
       <emu-alg>
         1. Return *"UTC"*.
       </emu-alg>
+
+      <emu-note>
+        <p>
+          To ensure the level of functionality that implementations commonly provide in the methods of the Date object, DefaultTimeZone must return an IANA time zone name corresponding to the host environment's time zone setting, if such a thing exists. GetIANATimeZoneEpochValue and GetIANATimeZoneOffsetNanoseconds must reflect the local political rules for standard time and daylight saving time in that time zone.
+        </p>
+        <p>
+          For example, if the host environment is a browser on a system where the user has chosen US Eastern Time as their time zone, DefaultTimeZone returns *"America/New_York"*.
+        </p>
+      </emu-note>
     </emu-clause>
 
     <emu-clause id="sec-availabletimezones" type="implementation-defined abstract operation">
@@ -112,7 +114,7 @@
       </h1>
       <dl class="header">
         <dt>description</dt>
-        <dd>The returned List is a sorted List of supported Zone and Link names in the IANA Time Zone Database.</dd>
+        <dd>The returned List is a sorted List of identifiers for time zones for which the implementation includes local political rules, and aliases for those identifiers.</dd>
       </dl>
 
       <p>
@@ -514,6 +516,17 @@
         1. Let _epochNanoseconds_ be GetEpochFromISOParts(_year_, _month_, _day_, _hour_, _minute_, _second_, _millisecond_, _microsecond_, _nanosecond_).
         1. Return &laquo; _epochNanoseconds_ &raquo;.
       </emu-alg>
+      <emu-note>
+        <p>
+          It is recommended that implementations use the time zone information of the IANA Time Zone Database <a href="https://www.iana.org/time-zones/">https://www.iana.org/time-zones/</a>.
+        </p>
+        <p>
+          1:30 AM on 5 November 2017 in America/New_York is repeated twice (fall backward), so GetIANATimeZoneEpochValue(*"America/New_York"*, 2017, 11, 5, 1, 30, 0, 0, 0, 0) would return a List of length 2.
+        </p>
+        <p>
+          2:30 AM on 12 March 2017 in America/New_York does not exist, so GetIANATimeZoneEpochValue(*"America/New_York"*, 2017, 3, 12, 2, 30, 0, 0, 0, 0) would return an empty List.
+        </p>
+      </emu-note>
     </emu-clause>
 
     <emu-clause id="sec-temporalgetianatimezoneoffsetnanoseconds" type="implementation-defined abstract operation">
@@ -538,6 +551,9 @@
         1. Assert: _timeZoneIdentifier_ is *"UTC"*.
         1. Return 0.
       </emu-alg>
+      <emu-note>
+        <p>Time zone offset values may be positive <i>or</i> negative.</p>
+      </emu-note>
     </emu-clause>
 
     <emu-clause id="sec-temporal-getianatimezonenexttransition" type="implementation-defined abstract operation">

@@ -505,6 +505,14 @@
         When the input represents a skipped local time at a positive time zone transition (e.g. when the daylight saving time starts or the time zone offset is increased due to a time zone rule change), the returned List will be empty.
         Otherwise, the returned List will have one element.
       </p>
+      <p>
+        The minimum implementation of GetIANATimeZoneEpochValue for ECMAScript implementations that do not include local political rules for any time zones performs the following steps when called:
+      </p>
+      <emu-alg>
+        1. Assert: _timeZoneIdentifier_ is *"UTC"*.
+        1. Let _epochNanoseconds_ be GetEpochFromISOParts(_year_, _month_, _day_, _hour_, _minute_, _second_, _millisecond_, _microsecond_, _nanosecond_).
+        1. Return &laquo; _epochNanoseconds_ &raquo;.
+      </emu-alg>
     </emu-clause>
 
     <emu-clause id="sec-temporalgetianatimezoneoffsetnanoseconds" type="implementation-defined abstract operation">
@@ -522,6 +530,13 @@
       <p>
         Given the same values of _epochNanoseconds_ and _timeZoneIdentifier_, the result must be the same for the lifetime of the surrounding agent.
       </p>
+      <p>
+        The minimum implementation of GetIANATimeZoneOffsetNanoseconds for ECMAScript implementations that do not include local political rules for any time zones performs the following steps when called:
+      </p>
+      <emu-alg>
+        1. Assert: _timeZoneIdentifier_ is *"UTC"*.
+        1. Return 0.
+      </emu-alg>
     </emu-clause>
 
     <emu-clause id="sec-temporal-getianatimezonenexttransition" type="implementation-defined abstract operation">
@@ -539,6 +554,13 @@
       <p>
         Given the same values of _epochNanoseconds_ and _timeZoneIdentifier_, the result must be the same for the lifetime of the surrounding agent.
       </p>
+      <p>
+        The minimum implementation of GetIANATimeZoneNextTransition for ECMAScript implementations that do not include local political rules for any time zones performs the following steps when called:
+      </p>
+      <emu-alg>
+        1. Assert: _timeZoneIdentifier_ is *"UTC"*.
+        1. Return *null*.
+      </emu-alg>
     </emu-clause>
 
     <emu-clause id="sec-temporal-getianatimezoneprevioustransition" type="implementation-defined abstract operation">
@@ -556,6 +578,13 @@
       <p>
         Given the same values of _epochNanoseconds_ and _timeZoneIdentifier_, the result must be the same for the lifetime of the surrounding agent.
       </p>
+      <p>
+        The minimum implementation of GetIANATimeZonePreviousTransition for ECMAScript implementations that do not include local political rules for any time zones performs the following steps when called:
+      </p>
+      <emu-alg>
+        1. Assert: _timeZoneIdentifier_ is *"UTC"*.
+        1. Return *null*.
+      </emu-alg>
     </emu-clause>
 
     <emu-clause id="sec-temporal-parsetimezoneoffsetstring" aoid="ParseTimeZoneOffsetString">

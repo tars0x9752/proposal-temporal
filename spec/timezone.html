@@ -15,7 +15,7 @@
       In addition, implementations may support any number of other built-in time zones.
     </p>
     <p>
-      Built-in time zones may be <dfn variants="named time zone">named time zones</dfn>, represented by Strings for which IsValidTimeZoneName returns *true*.
+      Built-in time zones may be <dfn variants="named time zone">named time zones</dfn>, represented by Strings for which IsAvailableTimeZoneName returns *true*.
       They may also be <dfn variants="offset time zone">offset time zones</dfn>, represented by Strings that conform to the syntax of |TimeZoneNumericUTCOffset|.
     </p>
     <p>
@@ -27,9 +27,9 @@
       Other implementations are encouraged to do the same.
     </p>
 
-    <emu-clause id="sec-isvalidtimezonename" type="abstract operation">
+    <emu-clause id="sec-isavailabletimezonename" type="abstract operation">
       <h1>
-        IsValidTimeZoneName (
+        IsAvailableTimeZoneName (
           _timeZone_: a String,
         ): a Boolean
       </h1>
@@ -38,7 +38,7 @@
         <dd>The returned value is *true* if _timeZone_ is an ASCII-case-insensitive match for a supported time zone name, and *false* otherwise.</dd>
       </dl>
       <p>
-        Once IsValidTimeZoneName(_timeZone_) has returned *true*, for the lifetime of the surrounding agent, IsValidTimeZoneName(_variant_) must return *true* if _variant_ is an ASCII-case-insensitive match for either _timeZone_ or CanonicalizeTimeZoneName(_timeZone_).
+        Once IsAvailableTimeZoneName(_timeZone_) has returned *true*, for the lifetime of the surrounding agent, IsAvailableTimeZoneName(_variant_) must return *true* if _variant_ is an ASCII-case-insensitive match for either _timeZone_ or CanonicalizeTimeZoneName(_timeZone_).
       </p>
       <p>
         For the purposes of this section, a String value _A_ is an ASCII-case-insensitive match for String value _B_ if the String value derived from _A_ by replacing each occurrence of a lowercase ASCII letter code unit (0x0061 through 0x007A, inclusive) with the corresponding uppercase ASCII letter code unit (0x0041 through 0x005A, inclusive) while preserving all other code units is exactly the same sequence of code units as the String value that is derived from _B_ in the same way.
@@ -55,7 +55,7 @@
     <emu-clause id="sec-canonicalizetimezonename" type="abstract operation">
       <h1>
         CanonicalizeTimeZoneName (
-          _timeZone_: a String that is a valid time zone name as verified by IsValidTimeZoneName,
+          _timeZone_: a String that is a valid time zone name as verified by IsAvailableTimeZoneName,
         )
       </h1>
       <dl class="header">
@@ -83,7 +83,7 @@
       </h1>
       <dl class="header">
         <dt>description</dt>
-        <dd>It returns a String value representing the host environment's current time zone, which is either a valid (<emu-xref href="#sec-isvalidtimezonename"></emu-xref>) and canonicalized (<emu-xref href="#sec-canonicalizetimezonename"></emu-xref>) time zone name, or an offset conforming to the syntax of a |TimeZoneNumericUTCOffset|.</dd>
+        <dd>It returns a String value representing the host environment's current time zone, which is either a valid (<emu-xref href="#sec-isavailabletimezonename"></emu-xref>) and canonicalized (<emu-xref href="#sec-canonicalizetimezonename"></emu-xref>) time zone name, or an offset conforming to the syntax of a |TimeZoneNumericUTCOffset|.</dd>
       </dl>
 
       <p>
@@ -162,7 +162,7 @@
         1. Set _identifier_ to ? ToString(_identifier_).
         1. Let _parseResult_ be ParseText(StringToCodePoints(_identifier_), |TimeZoneNumericUTCOffset|).
         1. If _parseResult_ is a List of errors, then
-          1. If IsValidTimeZoneName(_identifier_) is *false*, then
+          1. If IsAvailableTimeZoneName(_identifier_) is *false*, then
             1. Throw a *RangeError* exception.
           1. Set _identifier_ to ! CanonicalizeTimeZoneName(_identifier_).
         1. Return ? CreateTemporalTimeZone(_identifier_, NewTarget).
@@ -691,7 +691,7 @@
           1. If ParseText(StringToCodePoints(_parseResult_.[[Name]], |TimeZoneNumericUTCOffset|)) is not a List of errors, then
             1. If _parseResult_.[[OffsetString]] is not *undefined*, and ! ParseTimeZoneOffsetString(_parseResult_.[[OffsetString]]) &ne; ! ParseTimeZoneOffsetString(_parseResult_.[[Name]]), throw a *RangeError* exception.
           1. Else,
-            1. If IsValidTimeZoneName(_parseResult_.[[Name]]) is *false*, throw a *RangeError* exception.
+            1. If IsAvailableTimeZoneName(_parseResult_.[[Name]]) is *false*, throw a *RangeError* exception.
           1. Return ! CreateTemporalTimeZone(! CanonicalizeTimeZoneName(_parseResult_.[[Name]])).
         1. If _parseResult_.[[Z]] is *true*, return ! CreateTemporalTimeZone(*"UTC"*).
         1. Return ! CreateTemporalTimeZone(_parseResult_.[[OffsetString]]).
